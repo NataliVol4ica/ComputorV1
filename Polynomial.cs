@@ -45,6 +45,50 @@ namespace ComputorV1
             //simplify
             return coefficients;
         }
+        public void Write(List<double> poly)
+        {
+            bool isFirst = true;
+            bool wroteCoef;
+            for (int i = 0; i < poly.Count; i++)
+            {
+                if (poly[i] != 0.0)
+                {
+                    if (isFirst)
+                    {
+                        if (poly[i] < 0)
+                        {
+                            Console.Write("-");
+                            poly[i] = -poly[i];
+                        }
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        if (poly[i] < 0)
+                        {
+                            Console.Write("-");
+                            poly[i] = -poly[i];
+                        }
+                        else
+                            Console.Write(" + ");
+                    }
+                    wroteCoef = false;
+                    if (i == 0 || (i > 0 && poly[i] != 1.0))
+                    {
+                        Console.Write(poly[i]);
+                        wroteCoef = true;
+                    }
+                    if (i == 0)
+                        continue;
+                    if (wroteCoef)
+                        Console.Write("*");
+                    Console.Write("X");
+                    if (i == 1)
+                        continue;
+                    Console.Write("^" + i);
+                }
+            }
+        }
         #endregion
         #region Protected
         private Queue<string> Tokenize(string expression)
