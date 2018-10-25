@@ -3,6 +3,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
+//todo: remember position of lexems to show the place of error?
+
 namespace ComputorV1
 {
     public class Polynomial
@@ -34,11 +36,11 @@ namespace ComputorV1
         #endregion
 
         #region Public
-        public List<double> Parse(int degree, string expression)
+        public List<double> Parse(string expression)
         {
             Queue<string> stringTokens = Tokenize(expression);
             List<PolyToken> tokens = RecognizeLexems(stringTokens);
-            CompileExpression(degree, tokens, out List<double> coefficients);
+            CompileExpression(tokens, out List<double> coefficients);
             //syntax analys
             //simplify
             return coefficients;
@@ -83,28 +85,32 @@ namespace ComputorV1
             }
             return tokenQueue;
         }
-        private void CompileExpression(int degree, List<PolyToken> tokens, out List<double> coefficients)
+        private void CompileExpression(List<PolyToken> tokens, out List<double> coefficients)
         {
             coefficients = new List<double>();
-            coefficients.AddRange(Enumerable.Repeat(0.0, degree));
+            coefficients.AddRange(Enumerable.Repeat(0.0, 2));
             double coeff;
             int pow;
             double doublePow;
             int sign;
             int tokenIndex = 0;
+            int numOfOperators;
+            bool isStart = true;
             bool metEquation = false;
             while (tokenIndex < tokens.Count)
             {
-                sign = 1;
                 if (tokens[tokenIndex].tokenType == TokenType.Equation)
                 {
                     if (metEquation)
                         throw new Exception("Expression cannot have two equations");
                     metEquation = true;
+                    isStart = true;
                     tokenIndex++;
-                    continue;
+                    if (tokenIndex == tokens.Count)
+                        throw new Exception("Expression is missing it's right part");
                 }
-                //todo: hotya bi odin znak!!! sna4ala = 0 i esli 0 i + ili - to ...
+                sign = metEquation ? -1 : 1;
+                numOfOperators = 0;
                 while (tokenIndex < tokens.Count && tokens[tokenIndex].tokenType == TokenType.Operator)
                 {
                     if (tokens[tokenIndex].str == "*")
@@ -112,9 +118,13 @@ namespace ComputorV1
                     if (tokens[tokenIndex].str == "-")
                         sign = -sign;
                     tokenIndex++;
+                    numOfOperators++;
                 }
                 if (tokenIndex == tokens.Count)
                     throw new Exception("Expression cannot be ended by operator");
+                if (!isStart && numOfOperators == 0)
+                    throw new Exception("Expression is missing operator");
+                isStart = false;
                 if (tokens[tokenIndex].tokenType == TokenType.Number)
                 {
                     Double.TryParse(tokens[tokenIndex++].str, out coeff);
@@ -173,15 +183,16 @@ namespace ComputorV1
                     if (++tokenIndex == tokens.Count)
                         break;
                     if (tokens[tokenIndex].str.Contains("."))
-                        throw new Exception(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex++].str));
+                        throw new Exception(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex].str));
                     if (tokens[tokenIndex].str.Length > 1)
-                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex++].str));
-                    Double.TryParse(tokens[tokenIndex++].str, out doublePow);
+                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
+                    Double.TryParse(tokens[tokenIndex].str, out doublePow);
                     pow = (int)doublePow;
                     if (pow < 0 || pow > 2)
-                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex++].str));
+                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
                     coefficients[0] += sign * coeff;
                     sign = 1;
+                    tokenIndex++;
                 }
                 else
                     throw new Exception("Expression is missing X^N");

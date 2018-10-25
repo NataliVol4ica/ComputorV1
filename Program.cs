@@ -9,12 +9,13 @@ namespace ComputorV1
         {
             try
             {
-                List<double> polynomial = new Polynomial().Parse(2, "x^2");
+                List<double> polynomial = new Polynomial().Parse("x^3 = 0");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e.Message);
             }
+            Console.ReadLine();
             return 0;
         }
     }
