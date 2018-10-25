@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ComputorV1
 {
@@ -10,6 +6,7 @@ namespace ComputorV1
     {
         static int Main(string[] args)
         {
+            List<int> polynomial = new Polynomial().Parse(2, "x^2");
             return 0;
         }
     }
