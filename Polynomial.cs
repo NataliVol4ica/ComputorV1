@@ -89,6 +89,7 @@ namespace ComputorV1
             coefficients.AddRange(Enumerable.Repeat(0.0, degree));
             double coeff;
             int pow;
+            double doublePow;
             int sign;
             int tokenIndex = 0;
             bool metEquation = false;
@@ -103,6 +104,7 @@ namespace ComputorV1
                     tokenIndex++;
                     continue;
                 }
+                //todo: hotya bi odin znak!!! sna4ala = 0 i esli 0 i + ili - to ...
                 while (tokenIndex < tokens.Count && tokens[tokenIndex].tokenType == TokenType.Operator)
                 {
                     if (tokens[tokenIndex].str == "*")
@@ -111,19 +113,84 @@ namespace ComputorV1
                         sign = -sign;
                     tokenIndex++;
                 }
-                //znaki
-                //chislo
-                //umnojenie
-                //x
-                //pow
-                //chislo 0, 1 ili 2
                 if (tokenIndex == tokens.Count)
-                    throw new Exception("Expression cannot end with operator");
-                coefficients[pow] += coeff;
+                    throw new Exception("Expression cannot be ended by operator");
+                if (tokens[tokenIndex].tokenType == TokenType.Number)
+                {
+                    Double.TryParse(tokens[tokenIndex++].str, out coeff);
+                    if (tokenIndex == tokens.Count)
+                        break;
+                    if (tokens[tokenIndex].str != "*") //esli tolko 4islo
+                    {
+                        coefficients[0] += sign * coeff;
+                        sign = 1;
+                        continue;
+                    }
+                    else
+                        tokenIndex++;
+                    if (tokenIndex == tokens.Count)
+                        break;
+                }
+                else
+                    coeff = 1;
+                if (tokens[tokenIndex].tokenType == TokenType.Number)
+                {
+                    Double.TryParse(tokens[tokenIndex++].str, out coeff);
+                    if (tokenIndex == tokens.Count)//esli 4islo v konce
+                    {
+                        coefficients[0] += sign * coeff;
+                        sign = 1;
+                        break;
+                    }
+                    if (tokens[tokenIndex].str != "*") //esli tolko 4islo
+                    {
+                        coefficients[0] += sign * coeff;
+                        sign = 1;
+                        continue;
+                    }
+                    if (++tokenIndex == tokens.Count)
+                        break;
+
+                }
+                else
+                    coeff = 0;
+
+                if (tokens[tokenIndex].tokenType == TokenType.Var) //esli dalshe idet x
+                {
+                    tokenIndex++;
+                    if (tokenIndex == tokens.Count) //esli prosto x v konce
+                    {
+                        coefficients[1] += sign * coeff;
+                        sign = 1;
+                        break;
+                    }
+                    if (tokens[tokenIndex].str != "^") //esli tolko x
+                    {
+                        coefficients[0] += sign * coeff;
+                        sign = 1;
+                        continue;
+                    }
+                    if (++tokenIndex == tokens.Count)
+                        break;
+                    if (tokens[tokenIndex].str.Contains("."))
+                        throw new Exception(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex++].str));
+                    if (tokens[tokenIndex].str.Length > 1)
+                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex++].str));
+                    Double.TryParse(tokens[tokenIndex++].str, out doublePow);
+                    pow = (int)doublePow;
+                    if (pow < 0 || pow > 2)
+                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex++].str));
+                    coefficients[0] += sign * coeff;
+                    sign = 1;
+                }
+                else
+                    throw new Exception("Expression is missing X^N");
             }
+            if (!metEquation)
+                throw new Exception("Expression is missing \"=\"");
         }
         #endregion
 
-
+        //todo: make SyntaxException
     }
 }
