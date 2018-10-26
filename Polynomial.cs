@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-//todo: remember position of lexems to show the place of error?
-
 namespace ComputorV1
 {
     public static class Polynomial
@@ -36,7 +34,7 @@ namespace ComputorV1
 
         #region Variables
         private static readonly Regex tokenRegEx =
-           new Regex(@"\G\s*(\d+((\.|,)\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
+           new Regex(@"\s*(\d+((\.|,)\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
         #endregion
 
         #region Public
@@ -153,24 +151,33 @@ namespace ComputorV1
         }
         #endregion
 
-        #region Protected
+        #region Private
         private static Queue<string> Tokenize(string expression)
         {
             Queue<string> stringTokens = new Queue<string>();
             int lastMatchPos = 0;
             int lastMatchLen = 0;
+            string errorMessage = "";
             Match match = tokenRegEx.Match(expression);
             while (match.Success)
             {
+                if (lastMatchPos + lastMatchLen < match.Index)
+                {
+                    errorMessage += String.Format("Unknown lexem \"{0}\" at position {1}.\n",
+                        expression.Substring(lastMatchLen + lastMatchPos, match.Index - lastMatchLen - lastMatchPos),
+                        lastMatchLen + lastMatchPos + 1);
+                }
                 lastMatchPos = match.Index;
                 lastMatchLen = match.Value.Length;
                 stringTokens.Enqueue(match.Value.Trim());
                 match = match.NextMatch();
             }
-            //todo: all token errors with displayed in strings; continue until end of expression? two regexes?
-            //remove \g and if position is incorrect display errors ^_^
             if (lastMatchPos + lastMatchLen < expression.Length)
-                throw new LexicalException(String.Format("Invalid token at position {0}", lastMatchLen + lastMatchPos));
+                errorMessage += String.Format("Unknown lexem \"{0}\" at position {1}.\n",
+                        expression.Substring(lastMatchLen + lastMatchPos, expression.Length - lastMatchLen - lastMatchPos),
+                       lastMatchLen + lastMatchPos + 1);
+            if (errorMessage.Length > 0)
+                throw new LexicalException(errorMessage);
             return stringTokens;
         }
         private static List<PolyToken> RecognizeLexems(Queue<string> stringTokens)

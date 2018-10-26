@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace ComputorV1
 {
+    //"2 * ax abc = 0 "
     //"0"
     //"0 = 0"
     //"0 = 0 = 0"
@@ -31,7 +32,9 @@ namespace ComputorV1
         {
             try
             {
-                List<double> polynomial = Polynomial.Parse("1 * x ^0 + 0 * x^1 = -1 * x^2 ");
+                string expr = "2 * x = 0 ";
+                Console.WriteLine("Expression: {0}", expr);
+                List<double> polynomial = Polynomial.Parse(expr);
                 Polynomial.ShortenCoef(polynomial);
                 Console.Write("Reduced form: ");
                 Console.Write(Polynomial.ToString(polynomial));
