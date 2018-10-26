@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 //todo: remember position of lexems to show the place of error?
+//todo: make SyntaxException
 
 namespace ComputorV1
 {
@@ -27,6 +28,10 @@ namespace ComputorV1
             }
             public TokenType tokenType;
             public string str;
+            public override string ToString()
+            {
+                return str;
+            }
         }
         #endregion
 
@@ -145,8 +150,10 @@ namespace ComputorV1
             {
                 if (tokens[tokenIndex].tokenType == TokenType.Equation)
                 {
+                    if (tokenIndex == 0)
+                        throw new Exception("Expression is missing it's left part");
                     if (metEquation)
-                        throw new Exception("Expression cannot have two equations");
+                        throw new Exception("Expression cannot have more than one equation");
                     metEquation = true;
                     isStart = true;
                     tokenIndex++;
@@ -171,7 +178,7 @@ namespace ComputorV1
                 isStart = false;
                 if (tokens[tokenIndex].tokenType == TokenType.Number)
                 {
-                    Double.TryParse(tokens[tokenIndex++].str, out coeff);
+                    Double.TryParse(tokens[tokenIndex++].str.Replace('.', ','), out coeff);
                     if (tokenIndex == tokens.Count)//esli 4islo v konce
                     {
                         coefficients[0] += sign * coeff;
@@ -202,7 +209,7 @@ namespace ComputorV1
                     }
                     if (tokens[tokenIndex].str != "^") //esli tolko x
                     {
-                        coefficients[0] += sign * coeff;
+                        coefficients[1] += sign * coeff;
                         sign = 1;
                         continue;
                     }
@@ -212,7 +219,7 @@ namespace ComputorV1
                         throw new Exception(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex].str));
                     if (tokens[tokenIndex].str.Length > 1)
                         throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
-                    Double.TryParse(tokens[tokenIndex].str, out doublePow);
+                    Double.TryParse(tokens[tokenIndex].str.Replace('.', ','), out doublePow);
                     pow = (int)doublePow;
                     if (pow < 0 || pow > 2)
                         throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
@@ -228,6 +235,5 @@ namespace ComputorV1
         }
         #endregion
 
-        //todo: make SyntaxException
     }
 }
