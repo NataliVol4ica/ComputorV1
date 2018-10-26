@@ -135,10 +135,20 @@ namespace ComputorV1
                 else if (discr > 0)
                 {
                     Console.WriteLine("D > 0");
-                    Console.WriteLine("X = (-{0} +- sqr({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
+                    Console.WriteLine("X = (-{0} +- sqrt({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
                     double x1 = (-coefficients[1] + Math.Sqrt(discr)) / (2 * coefficients[2]);
                     double x2 = (-coefficients[1] - Math.Sqrt(discr)) / (2 * coefficients[2]);
                     Console.WriteLine("Solution:\nX1 = {0}\nX2 = {1}", x1, x2);
+                }
+                else
+                {
+                    Console.WriteLine("D < 0");
+                    Console.WriteLine("X = (-{0} +- sqrt({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
+                    Console.WriteLine("Solution:");
+                    double a1 = -coefficients[1] / (2 * coefficients[2]);
+                    double a2 = Math.Sqrt(-discr) / (2 * coefficients[2]);
+                    Console.WriteLine("X1 = {0} + {1}i", a1, a2);
+                    Console.WriteLine("X2 = {0} - {1}i", a1, a2);
                 }
             }
         }

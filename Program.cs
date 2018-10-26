@@ -23,6 +23,7 @@ namespace ComputorV1
     //"x^2 - x - 2 = 0"
     //"x^2 + x - 2 = 0"
     //"x^2 + 4*x + 4 = 0"
+    //"x^2 - 6*x + 34=0"
     //degree of 42x = 42x
     //degree of 0 = 0
 
@@ -32,7 +33,7 @@ namespace ComputorV1
         {
             try
             {
-                List<double> polynomial = Polynomial.Parse("x^2 + x - 2 = 0");
+                List<double> polynomial = Polynomial.Parse("x^2 - 6*x + 34=0");
                 Polynomial.ShortenCoef(polynomial);
                 Console.Write("Reduced form: ");
                 Console.Write(Polynomial.ToString(polynomial));
