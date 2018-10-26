@@ -117,7 +117,7 @@ namespace ComputorV1
             }
             else if (coefficients.Count == 2)
             {
-               Console.WriteLine("Solution:\nX = {0}", (coefficients[0] / coefficients[1]));
+               Console.WriteLine("Solution:\nX = {0}", (-coefficients[0] / coefficients[1]));
             }
             else
             {
