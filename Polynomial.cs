@@ -37,7 +37,7 @@ namespace ComputorV1
 
         #region Variables
         private static readonly Regex tokenRegEx =
-           new Regex(@"\G\s*(\d+(\.\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
+           new Regex(@"\G\s*(\d+((\.|,)\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
         #endregion
 
         #region Public
@@ -136,7 +136,7 @@ namespace ComputorV1
                     Console.WriteLine("X = (-{0} +- sqrt({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
                     double x1 = (-coefficients[1] + Math.Sqrt(discr)) / (2 * coefficients[2]);
                     double x2 = (-coefficients[1] - Math.Sqrt(discr)) / (2 * coefficients[2]);
-                    Console.WriteLine("Solution:\nX1 = {0}\nX2 = {1}", x1, x2);
+                    Console.WriteLine("Solution:\nX1 = {0}\nX2 = {1}", x1 , x2);
                 }
                 else
                 {
@@ -144,9 +144,11 @@ namespace ComputorV1
                     Console.WriteLine("X = (-{0} +- sqrt({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
                     Console.WriteLine("Solution:");
                     double a1 = -coefficients[1] / (2 * coefficients[2]);
-                    double a2 = Math.Sqrt(-discr) / (2 * coefficients[2]);
-                    Console.WriteLine("X1 = {0} + {1}i", a1, a2);
-                    Console.WriteLine("X2 = {0} - {1}i", a1, a2);
+                    double a2 = Math.Abs(Math.Sqrt(-discr) / (2 * coefficients[2]));
+                    string s1 = a1 != 0 ? a1.ToString() : "";
+                    string s2 = a2 != 1 ? a2.ToString() : ""; 
+                    Console.WriteLine("X1 = {0} + {1}i", s1, s2);
+                    Console.WriteLine("X2 = {0} - {1}i", s1, s2);
                 }
             }
         }

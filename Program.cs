@@ -6,23 +6,24 @@ using System.Collections.Generic;
 
 namespace ComputorV1
 {
-    //x =2,0
-    //x^20 = 0
-    //x^20 = x^20
-    //"= 2"
-    //"x = 2 = 3"
-    //"x = 2"
+    //"0"
+    //"0 = 0"
+    //"0 = 0 = 0"
+    //"= 0"
+    //"2 = 0"
+    //"x =2,0"
+    //"X =2.0"
+    //"x^20 = 0"
+    //"x^20 = x^20"
     //"2*x=2*X"
-    //"2 + -3 * x ^2 = 0"
-    //"2 + ----3 * x ^2 = 0"
     //"2 + 1 * x^2 = 0"
     //"1 * x ^0 + 0 * x^1 + 1 * x^2 = 0"
+    //"1 * x ^0 + 0 * x^1 - 1 * x^2 = 0"
     //"x^2 - x - 2 = 0"
     //"x^2 + x - 2 = 0"
     //"x^2 + 4*x + 4 = 0"
     //"x^2 - 6*x + 34=0"
-    //degree of 42x = 42x
-    //degree of 0 = 0
+    //"2 + ----3 * x ^2 = 0"
 
     class Program
     {
@@ -30,7 +31,7 @@ namespace ComputorV1
         {
             try
             {
-                List<double> polynomial = Polynomial.Parse("5 + 4 * X + X^2= X^2");
+                List<double> polynomial = Polynomial.Parse("1 * x ^0 + 0 * x^1 = -1 * x^2 ");
                 Polynomial.ShortenCoef(polynomial);
                 Console.Write("Reduced form: ");
                 Console.Write(Polynomial.ToString(polynomial));
