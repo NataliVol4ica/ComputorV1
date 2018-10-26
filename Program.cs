@@ -15,6 +15,8 @@ namespace ComputorV1
             {
                 List<double> polynomial = new Polynomial().Parse("2 + 1 * x^2 = 0");
                 //1 * x ^0 + 0 * x^1 + 1 * x^2 = 0
+                //for (int i = 0; i < 3; i++)
+                //    Console.WriteLine(i + " " + polynomial[i]);
                 Console.Write("Reduced form: ");
                 new Polynomial().Write(polynomial);
                 Console.WriteLine();

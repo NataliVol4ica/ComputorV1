@@ -132,7 +132,7 @@ namespace ComputorV1
         private void CompileExpression(List<PolyToken> tokens, out List<double> coefficients)
         {
             coefficients = new List<double>();
-            coefficients.AddRange(Enumerable.Repeat(0.0, 2));
+            coefficients.AddRange(Enumerable.Repeat(0.0, 3));
             double coeff;
             int pow;
             double doublePow;
@@ -172,24 +172,6 @@ namespace ComputorV1
                 if (tokens[tokenIndex].tokenType == TokenType.Number)
                 {
                     Double.TryParse(tokens[tokenIndex++].str, out coeff);
-                    if (tokenIndex == tokens.Count)
-                        break;
-                    if (tokens[tokenIndex].str != "*") //esli tolko 4islo
-                    {
-                        coefficients[0] += sign * coeff;
-                        sign = 1;
-                        continue;
-                    }
-                    else
-                        tokenIndex++;
-                    if (tokenIndex == tokens.Count)
-                        break;
-                }
-                else
-                    coeff = 1;
-                if (tokens[tokenIndex].tokenType == TokenType.Number)
-                {
-                    Double.TryParse(tokens[tokenIndex++].str, out coeff);
                     if (tokenIndex == tokens.Count)//esli 4islo v konce
                     {
                         coefficients[0] += sign * coeff;
@@ -207,7 +189,7 @@ namespace ComputorV1
 
                 }
                 else
-                    coeff = 0;
+                    coeff = 1;
 
                 if (tokens[tokenIndex].tokenType == TokenType.Var) //esli dalshe idet x
                 {
@@ -234,7 +216,7 @@ namespace ComputorV1
                     pow = (int)doublePow;
                     if (pow < 0 || pow > 2)
                         throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
-                    coefficients[0] += sign * coeff;
+                    coefficients[pow] += sign * coeff;
                     sign = 1;
                     tokenIndex++;
                 }
