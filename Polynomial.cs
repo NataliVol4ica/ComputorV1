@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 //todo: remember position of lexems to show the place of error?
 //todo: make SyntaxException
+//todo: think of making this static
 
 namespace ComputorV1
 {
-    public class Polynomial
+    public static class Polynomial
     {
         #region Enums and Structs
         protected enum TokenType
@@ -41,28 +42,30 @@ namespace ComputorV1
         #endregion
 
         #region Public
-        public List<double> Parse(string expression, out int degree)
+        public static List<double> Parse(string expression)
         {
             Queue<string> stringTokens = Tokenize(expression);
             List<PolyToken> tokens = RecognizeLexems(stringTokens);
-            CompileExpression(tokens, out List<double> coefficients, out degree);
+            CompileExpression(tokens, out List<double> coefficients);
             return coefficients;
         }
-        public string ToString(List<double> poly)
+        public static string ToString(List<double> poly)
         {
             string str = "";
             bool isFirst = true;
             bool wroteCoef;
+            double coef;
             for (int i = 0; i < poly.Count; i++)
             {
-                if (poly[i] != 0.0)
+                coef = poly[i];
+                if (coef != 0.0)
                 {
                     if (isFirst)
                     {
-                        if (poly[i] < 0)
+                        if (coef < 0)
                         {
                             str += "-";
-                            poly[i] = -poly[i];
+                            coef = -coef;
                         }
                         isFirst = false;
                     }
@@ -71,15 +74,15 @@ namespace ComputorV1
                         if (poly[i] < 0)
                         {
                             str += " - ";
-                            poly[i] = -poly[i];
+                            coef = -coef;
                         }
                         else
                             str += " + ";
                     }
                     wroteCoef = false;
-                    if (i == 0 || (i > 0 && poly[i] != 1.0))
+                    if (i == 0 || (i > 0 && coef != 1.0))
                     {
-                        str += poly[i].ToString();
+                        str += coef.ToString();
                         wroteCoef = true;
                     }
                     if (i == 0)
@@ -96,9 +99,52 @@ namespace ComputorV1
                 str = "0";
             return str;
         }
+        public static void ShortenCoef(List<double> coefficients)
+        {
+            int cleanLen = coefficients.Count - 1;
+            while (cleanLen > 1 && coefficients[cleanLen] == 0)
+                cleanLen--;
+            coefficients.RemoveRange(cleanLen, coefficients.Count - cleanLen - 1);
+        }
+        public static void Solve(List<double> coefficients)
+        {
+            List<string> solution = new List<string>();
+            if (coefficients.Count == 1)
+            {
+                if (coefficients[0] == 0.0)
+                    Console.WriteLine("Solution:\nAll the real numbers");
+                else
+                    Console.WriteLine("There is no solution.");
+            }
+            else if (coefficients.Count == 2)
+            {
+               Console.WriteLine("Solution:\nX = {0}", (coefficients[0] / coefficients[1]));
+            }
+            else
+            {
+                //ax^2 + bx + c = 0
+                double discr = coefficients[1] * coefficients[1] - 4 * coefficients[0] * coefficients[2];
+                Console.WriteLine("D = {1}^2 - 4*{0}*{2} = {3}", coefficients[0], coefficients[1], coefficients[2], discr);
+                if (discr == 0)
+                {
+                    Console.WriteLine("D = 0");
+                    Console.WriteLine("X = -{0}/(2*{1})", coefficients[1], coefficients[2]);
+                    double x = -coefficients[1] / (2 * coefficients[2]);
+                    Console.WriteLine("Solution:\nX = {0}", x);
+                }
+                else if (discr > 0)
+                {
+                    Console.WriteLine("D > 0");
+                    Console.WriteLine("X = (-{0} +- sqr({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
+                    double x1 = (-coefficients[1] + Math.Sqrt(discr)) / (2 * coefficients[2]);
+                    double x2 = (-coefficients[1] - Math.Sqrt(discr)) / (2 * coefficients[2]);
+                    Console.WriteLine("Solution:\nX1 = {0}\nX2 = {1}", x1, x2);
+                }
+            }
+        }
         #endregion
         #region Protected
-        private Queue<string> Tokenize(string expression)
+        private static Queue<string> Tokenize(string expression)
         {
             Queue<string> stringTokens = new Queue<string>();
             int lastMatchPos = 0;
@@ -116,7 +162,7 @@ namespace ComputorV1
                 throw new ArgumentException(String.Format("Invalid token at position {0}", lastMatchLen + lastMatchPos));
             return stringTokens;
         }
-        private List<PolyToken> RecognizeLexems(Queue<string> stringTokens)
+        private static List<PolyToken> RecognizeLexems(Queue<string> stringTokens)
         {
             var tokenQueue = new List<PolyToken>();
             TokenType tokenType;
@@ -136,11 +182,15 @@ namespace ComputorV1
             }
             return tokenQueue;
         }
-        private void CompileExpression(List<PolyToken> tokens, out List<double> coefficients, out int degree)
+        private static void AddCoef(List<double> coefficients, int pow, double coef)
         {
-            degree = -1;
+            if (coefficients.Count <= pow)
+                coefficients.AddRange(Enumerable.Repeat(0.0, pow - coefficients.Count + 1));
+            coefficients[pow] += coef;
+        }
+        private static void CompileExpression(List<PolyToken> tokens, out List<double> coefficients)
+        {
             coefficients = new List<double>();
-            coefficients.AddRange(Enumerable.Repeat(0.0, 3));
             double coeff;
             int pow;
             double doublePow;
@@ -184,15 +234,13 @@ namespace ComputorV1
                     Double.TryParse(tokens[tokenIndex++].str.Replace('.', ','), out coeff);
                     if (tokenIndex == tokens.Count)//esli 4islo v konce
                     {
-                        degree = Math.Max(degree, 0);
-                        coefficients[0] += sign * coeff;
+                        AddCoef(coefficients, 0, sign * coeff);
                         sign = 1;
                         break;
                     }
                     if (tokens[tokenIndex].str != "*") //esli tolko 4islo
                     {
-                        degree = Math.Max(degree, 0);
-                        coefficients[0] += sign * coeff;
+                        AddCoef(coefficients, 0, sign * coeff);
                         sign = 1;
                         continue;
                     }
@@ -208,15 +256,13 @@ namespace ComputorV1
                     tokenIndex++;
                     if (tokenIndex == tokens.Count) //esli prosto x v konce
                     {
-                        degree = Math.Max(degree, 1);
-                        coefficients[1] += sign * coeff;
+                        AddCoef(coefficients, 1, sign * coeff);
                         sign = 1;
                         break;
                     }
                     if (tokens[tokenIndex].str != "^") //esli tolko x
                     {
-                        degree = Math.Max(degree, 1);
-                        coefficients[1] += sign * coeff;
+                        AddCoef(coefficients, 1, sign * coeff);
                         sign = 1;
                         continue;
                     }
@@ -224,14 +270,11 @@ namespace ComputorV1
                         break;
                     if (tokens[tokenIndex].str.Contains("."))
                         throw new Exception(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex].str));
-                    if (tokens[tokenIndex].str.Length > 1)
-                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
                     Double.TryParse(tokens[tokenIndex].str.Replace('.', ','), out doublePow);
                     pow = (int)doublePow;
-                    if (pow < 0 || pow > 2)
-                        throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
-                    degree = Math.Max(degree, pow);
-                    coefficients[pow] += sign * coeff;
+                    if (pow < 0)
+                        throw new Exception(String.Format("Pow has to be >= 0. {0} is not.", tokens[tokenIndex].str));
+                    AddCoef(coefficients, pow, sign * coeff);
                     sign = 1;
                     tokenIndex++;
                 }
