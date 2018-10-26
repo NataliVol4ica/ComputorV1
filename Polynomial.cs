@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 //todo: remember position of lexems to show the place of error?
 //todo: make SyntaxException
-//todo: think of making this static
 
 namespace ComputorV1
 {
@@ -102,9 +101,9 @@ namespace ComputorV1
         public static void ShortenCoef(List<double> coefficients)
         {
             int cleanLen = coefficients.Count - 1;
-            while (cleanLen > 1 && coefficients[cleanLen] == 0)
+            while (cleanLen > 0 && coefficients[cleanLen] == 0.0)
                 cleanLen--;
-            coefficients.RemoveRange(cleanLen, coefficients.Count - cleanLen - 1);
+            coefficients.RemoveRange(cleanLen + 1, coefficients.Count - cleanLen - 1);
         }
         public static void Solve(List<double> coefficients)
         {
@@ -122,7 +121,6 @@ namespace ComputorV1
             }
             else
             {
-                //ax^2 + bx + c = 0
                 double discr = coefficients[1] * coefficients[1] - 4 * coefficients[0] * coefficients[2];
                 Console.WriteLine("D = {1}^2 - 4*{0}*{2} = {3}", coefficients[0], coefficients[1], coefficients[2], discr);
                 if (discr == 0)

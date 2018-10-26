@@ -3,13 +3,10 @@ using System.Collections.Generic;
 
 //todo: test error management
 //todo: program should take args. first expr: steps: etc foreach str
-//todo: has to simplify any pow
 
-//todo: 0 = 0
-//todo: 42 = 0
 namespace ComputorV1
 {
-    //x ^ -2
+    //x =2,0
     //x^20 = 0
     //x^20 = x^20
     //"= 2"
@@ -33,7 +30,7 @@ namespace ComputorV1
         {
             try
             {
-                List<double> polynomial = Polynomial.Parse("x^2 - 6*x + 34=0");
+                List<double> polynomial = Polynomial.Parse("5 + 4 * X + X^2= X^2");
                 Polynomial.ShortenCoef(polynomial);
                 Console.Write("Reduced form: ");
                 Console.Write(Polynomial.ToString(polynomial));
