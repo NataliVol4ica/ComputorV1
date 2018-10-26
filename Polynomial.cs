@@ -145,14 +145,15 @@ namespace ComputorV1
                     Console.WriteLine("Solution:");
                     double a1 = -coefficients[1] / (2 * coefficients[2]);
                     double a2 = Math.Abs(Math.Sqrt(-discr) / (2 * coefficients[2]));
-                    string s1 = a1 != 0 ? a1.ToString() : "";
-                    string s2 = a2 != 1 ? a2.ToString() : ""; 
-                    Console.WriteLine("X1 = {0} + {1}i", s1, s2);
-                    Console.WriteLine("X2 = {0} - {1}i", s1, s2);
+                    string s1 = a1 != 0 ? a1.ToString() + " " : "";
+                    string s2 = a2 != 1 ? " " + a2.ToString() : ""; 
+                    Console.WriteLine("X1 = {0}+{1}i", s1, s2);
+                    Console.WriteLine("X2 = {0}-{1}i", s1, s2);
                 }
             }
         }
         #endregion
+
         #region Protected
         private static Queue<string> Tokenize(string expression)
         {
