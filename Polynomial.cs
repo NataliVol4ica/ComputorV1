@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 //todo: remember position of lexems to show the place of error?
-//todo: make SyntaxException
 
 namespace ComputorV1
 {
@@ -169,8 +168,9 @@ namespace ComputorV1
                 match = match.NextMatch();
             }
             //todo: all token errors with displayed in strings; continue until end of expression? two regexes?
+            //remove \g and if position is incorrect display errors ^_^
             if (lastMatchPos + lastMatchLen < expression.Length)
-                throw new ArgumentException(String.Format("Invalid token at position {0}", lastMatchLen + lastMatchPos));
+                throw new LexicalException(String.Format("Invalid token at position {0}", lastMatchLen + lastMatchPos));
             return stringTokens;
         }
         private static List<PolyToken> RecognizeLexems(Queue<string> stringTokens)
@@ -215,14 +215,14 @@ namespace ComputorV1
                 if (tokens[tokenIndex].tokenType == TokenType.Equation)
                 {
                     if (tokenIndex == 0)
-                        throw new Exception("Expression is missing it's left part");
+                        throw new SyntaxException("Expression is missing it's left part");
                     if (metEquation)
-                        throw new Exception("Expression cannot have more than one equation");
+                        throw new SyntaxException("Expression cannot have more than one equation");
                     metEquation = true;
                     isStart = true;
                     tokenIndex++;
                     if (tokenIndex == tokens.Count)
-                        throw new Exception("Expression is missing it's right part");
+                        throw new SyntaxException("Expression is missing it's right part");
                 }
                 sign = metEquation ? -1 : 1;
                 numOfOperators = 0;
@@ -236,9 +236,9 @@ namespace ComputorV1
                     numOfOperators++;
                 }
                 if (tokenIndex == tokens.Count)
-                    throw new Exception("Expression cannot be ended by operator");
+                    throw new SyntaxException("Expression cannot be ended by operator");
                 if (!isStart && numOfOperators == 0)
-                    throw new Exception("Expression is missing operator");
+                    throw new SyntaxException("Expression is missing operator");
                 isStart = false;
                 if (tokens[tokenIndex].tokenType == TokenType.Number)
                 {
@@ -280,20 +280,20 @@ namespace ComputorV1
                     if (++tokenIndex == tokens.Count)
                         break;
                     if (tokens[tokenIndex].str.Contains("."))
-                        throw new Exception(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex].str));
+                        throw new SyntaxException(String.Format("Pow has to be integer. {0} is not.", tokens[tokenIndex].str));
                     Double.TryParse(tokens[tokenIndex].str.Replace('.', ','), out doublePow);
                     pow = (int)doublePow;
                     if (pow < 0)
-                        throw new Exception(String.Format("Pow has to be >= 0. {0} is not.", tokens[tokenIndex].str));
+                        throw new SyntaxException(String.Format("Pow has to be >= 0. {0} is not.", tokens[tokenIndex].str));
                     AddCoef(coefficients, pow, sign * coeff);
                     sign = 1;
                     tokenIndex++;
                 }
                 else
-                    throw new Exception("Expression is missing X^N");
+                    throw new SyntaxException("Expression is missing X^N");
             }
             if (!metEquation)
-                throw new Exception("Expression is missing \"=\"");
+                throw new SyntaxException("Expression is missing \"=\"");
         }
         #endregion
     }
