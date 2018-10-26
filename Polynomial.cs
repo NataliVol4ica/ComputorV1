@@ -41,17 +41,16 @@ namespace ComputorV1
         #endregion
 
         #region Public
-        public List<double> Parse(string expression)
+        public List<double> Parse(string expression, out int degree)
         {
             Queue<string> stringTokens = Tokenize(expression);
             List<PolyToken> tokens = RecognizeLexems(stringTokens);
-            CompileExpression(tokens, out List<double> coefficients);
-            //syntax analys
-            //simplify
+            CompileExpression(tokens, out List<double> coefficients, out degree);
             return coefficients;
         }
-        public void Write(List<double> poly)
+        public string ToString(List<double> poly)
         {
+            string str = "";
             bool isFirst = true;
             bool wroteCoef;
             for (int i = 0; i < poly.Count; i++)
@@ -62,7 +61,7 @@ namespace ComputorV1
                     {
                         if (poly[i] < 0)
                         {
-                            Console.Write("-");
+                            str += "-";
                             poly[i] = -poly[i];
                         }
                         isFirst = false;
@@ -71,28 +70,31 @@ namespace ComputorV1
                     {
                         if (poly[i] < 0)
                         {
-                            Console.Write("-");
+                            str += " - ";
                             poly[i] = -poly[i];
                         }
                         else
-                            Console.Write(" + ");
+                            str += " + ";
                     }
                     wroteCoef = false;
                     if (i == 0 || (i > 0 && poly[i] != 1.0))
                     {
-                        Console.Write(poly[i]);
+                        str += poly[i].ToString();
                         wroteCoef = true;
                     }
                     if (i == 0)
                         continue;
                     if (wroteCoef)
-                        Console.Write("*");
-                    Console.Write("X");
+                        str += "*";
+                    str += "X";
                     if (i == 1)
                         continue;
-                    Console.Write("^" + i);
+                    str += "^" + i.ToString();
                 }
             }
+            if (isFirst)
+                str = "0";
+            return str;
         }
         #endregion
         #region Protected
@@ -134,8 +136,9 @@ namespace ComputorV1
             }
             return tokenQueue;
         }
-        private void CompileExpression(List<PolyToken> tokens, out List<double> coefficients)
+        private void CompileExpression(List<PolyToken> tokens, out List<double> coefficients, out int degree)
         {
+            degree = -1;
             coefficients = new List<double>();
             coefficients.AddRange(Enumerable.Repeat(0.0, 3));
             double coeff;
@@ -181,12 +184,14 @@ namespace ComputorV1
                     Double.TryParse(tokens[tokenIndex++].str.Replace('.', ','), out coeff);
                     if (tokenIndex == tokens.Count)//esli 4islo v konce
                     {
+                        degree = Math.Max(degree, 0);
                         coefficients[0] += sign * coeff;
                         sign = 1;
                         break;
                     }
                     if (tokens[tokenIndex].str != "*") //esli tolko 4islo
                     {
+                        degree = Math.Max(degree, 0);
                         coefficients[0] += sign * coeff;
                         sign = 1;
                         continue;
@@ -203,12 +208,14 @@ namespace ComputorV1
                     tokenIndex++;
                     if (tokenIndex == tokens.Count) //esli prosto x v konce
                     {
+                        degree = Math.Max(degree, 1);
                         coefficients[1] += sign * coeff;
                         sign = 1;
                         break;
                     }
                     if (tokens[tokenIndex].str != "^") //esli tolko x
                     {
+                        degree = Math.Max(degree, 1);
                         coefficients[1] += sign * coeff;
                         sign = 1;
                         continue;
@@ -223,6 +230,7 @@ namespace ComputorV1
                     pow = (int)doublePow;
                     if (pow < 0 || pow > 2)
                         throw new Exception(String.Format("Pow has to be 0..2. {0} is not.", tokens[tokenIndex].str));
+                    degree = Math.Max(degree, pow);
                     coefficients[pow] += sign * coeff;
                     sign = 1;
                     tokenIndex++;
@@ -234,6 +242,5 @@ namespace ComputorV1
                 throw new Exception("Expression is missing \"=\"");
         }
         #endregion
-
     }
 }
