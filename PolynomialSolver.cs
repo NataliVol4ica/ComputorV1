@@ -42,12 +42,17 @@ namespace ComputorV1
         {
             var solution = new Solution();
             solution.Expression = expression;
-            List<double> polynomial = Polynomial.Parse(expression);
-            Polynomial.ShortenCoef(polynomial);
-            solution.ReducedForm = Polynomial.ToString(polynomial);
-            solution.Degree = polynomial.Count - 1;
-            if (solution.IsSolvable)
-                Polynomial.Solve(polynomial, solution);
+            List<double> polynomial = Polynomial.Parse(expression, solution);
+            if (solution.IsValid)
+            {
+                Polynomial.ShortenCoef(polynomial);
+                solution.ReducedForm = Polynomial.ToString(polynomial);
+                solution.Degree = polynomial.Count - 1;
+                if (solution.IsSolvable)
+                    Polynomial.Solve(polynomial, solution);
+            }
+
+            solution.WriteSolution(_console);
         }
     }
 }

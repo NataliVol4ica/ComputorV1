@@ -12,11 +12,20 @@ namespace ComputorV1
         private static readonly Regex TokenRegEx =
             new Regex(@"\s*(\d+((\.|,)\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
 
-        public static List<double> Parse(string expression)
+        public static List<double> Parse(string expression, Solution solution)
         {
-            Queue<string> stringTokens = Tokenize(expression);
-            List<PolyToken> tokens = RecognizeLexems(stringTokens);
-            CompileExpression(tokens, out List<double> coefficients);
+            List<double> coefficients = default;
+            try
+            {
+                Queue<string> stringTokens = Tokenize(expression);
+                List<PolyToken> tokens = RecognizeLexems(stringTokens);
+                CompileExpression(tokens, out coefficients);
+            }
+            catch (LexicalException ex)
+            {
+                solution.ValidationError = ex.Message;
+            }
+
             return coefficients;
         }
 
@@ -85,29 +94,29 @@ namespace ComputorV1
 
         public static void Solve(List<double> coefficients, Solution solution)
         {
-            List<string> solution = new List<string>();
             if (coefficients.Count == 1)
             {
                 if (coefficients[0] == 0.0)
-                    Console.WriteLine("Solution:\nAll the real numbers");
+                   solution.SolutionType=SolutionType.All;
                 else
-                    Console.WriteLine("There is no solution.");
+                    solution.SolutionType = SolutionType.None;
             }
             else if (coefficients.Count == 2)
             {
-                Console.WriteLine("Solution:\nX = {0}", (-coefficients[0] / coefficients[1]));
+                solution.SolutionType = SolutionType.Single;
+                solution.Answers.Add($"{-coefficients[0] / coefficients[1]}");
             }
             else
             {
                 double discr = coefficients[1] * coefficients[1] - 4 * coefficients[0] * coefficients[2];
-                Console.WriteLine("D = {1}^2 - 4*{0}*{2} = {3}", coefficients[0], coefficients[1], coefficients[2],
-                    discr);
+               var a = $"D = {coefficients[1]}^2 - 4*{coefficients[0]}*{coefficients[2]} = {discr}";
                 if (discr == 0)
                 {
-                    Console.WriteLine("D = 0");
-                    Console.WriteLine("X = -{0}/(2*{1})", coefficients[1], coefficients[2]);
+                    solution.SolutionLogs.Add("D = 0");
+                    solution.SolutionLogs.Add($"X = -{coefficients[1]}/(2*{coefficients[2]})");
                     double x = -coefficients[1] / (2 * coefficients[2]);
-                    Console.WriteLine("Solution:\nX = {0}", x);
+                    solution.SolutionType = SolutionType.Single;
+                    solution.Answers.Add($"Solution:\nX = {x}");
                 }
                 else if (discr > 0)
                 {
@@ -131,10 +140,6 @@ namespace ComputorV1
                 }
             }
         }
-
-        #endregion
-
-        #region Private
 
         private static Queue<string> Tokenize(string expression)
         {
