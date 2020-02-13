@@ -6,7 +6,7 @@ using Xunit;
 
 namespace ComputorV1Tests
 {
-    public class Tests
+    public class PolynomialSolverTests
     {
         #region tests
 
@@ -43,7 +43,7 @@ namespace ComputorV1Tests
 
         private Mock<IConsole> _consoleMock = new Mock<IConsole>();
 
-        public Tests()
+        public PolynomialSolverTests()
         {
             _consoleMock
                 .Setup(c=>c.Write(It.IsAny<string>()))
@@ -55,14 +55,26 @@ namespace ComputorV1Tests
                 .Setup(c=>c.Read());
             _consoleMock
                 .Setup(c=>c.ReadLine());
+        }
+
+        private void SetupSolver()
+        {
             _testedSolver = new PolynomialSolver(_consoleMock.Object);
         }
 
         [Theory]
         [MemberData(nameof(ValidTests))]
-        public void Test1(string expression, string expected)
+        public void Solve_WhenCalled_ShouldWriteProperSolution(string expression, Solution expected)
         {
+            //Arrange
+            _consoleMock
+                .Setup(c => c.ReadLine())
+                .Returns(expression);
+            SetupSolver();
 
+            //Act
+
+            //Assert
         }
     }
 }

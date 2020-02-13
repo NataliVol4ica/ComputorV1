@@ -8,7 +8,7 @@ using ComputorV1.HelperEntities;
 namespace ComputorV1
 {
     public static class Polynomial
-    { 
+    {
         private static readonly Regex TokenRegEx =
             new Regex(@"\s*(\d+((\.|,)\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
 
@@ -83,7 +83,7 @@ namespace ComputorV1
             coefficients.RemoveRange(cleanLen + 1, coefficients.Count - cleanLen - 1);
         }
 
-        public static void Solve(List<double> coefficients)
+        public static void Solve(List<double> coefficients, Solution solution)
         {
             List<string> solution = new List<string>();
             if (coefficients.Count == 1)

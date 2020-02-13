@@ -40,14 +40,14 @@ namespace ComputorV1
 
         private void SolveExpression(string expression)
         {
-            _console.WriteLine($"Expression: {expression}");
+            var solution = new Solution();
+            solution.Expression = expression;
             List<double> polynomial = Polynomial.Parse(expression);
             Polynomial.ShortenCoef(polynomial);
-            _console.WriteLine($"Reduced form: {Polynomial.ToString(polynomial)} = 0");
-            _console.WriteLine("Polynomial Degree: " + (polynomial.Count - 1));
-            if (polynomial.Count > 3)
-                throw new Exception($"Degree has to be 0..2. {polynomial.Count - 1} is not.");
-            Polynomial.Solve(polynomial);
+            solution.ReducedForm = Polynomial.ToString(polynomial);
+            solution.Degree = polynomial.Count - 1;
+            if (solution.IsSolvable)
+                Polynomial.Solve(polynomial, solution);
         }
     }
 }
