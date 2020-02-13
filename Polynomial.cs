@@ -109,34 +109,34 @@ namespace ComputorV1
             else
             {
                 double discr = coefficients[1] * coefficients[1] - 4 * coefficients[0] * coefficients[2];
-               var a = $"D = {coefficients[1]}^2 - 4*{coefficients[0]}*{coefficients[2]} = {discr}";
-                if (discr == 0)
+                var a = $"D = {coefficients[1]}^2 - 4*{coefficients[0]}*{coefficients[2]} = {discr}";
+                if (discr == 0.0)
                 {
                     solution.SolutionLogs.Add("D = 0");
                     solution.SolutionLogs.Add($"X = -{coefficients[1]}/(2*{coefficients[2]})");
                     double x = -coefficients[1] / (2 * coefficients[2]);
                     solution.SolutionType = SolutionType.Single;
-                    solution.Answers.Add($"Solution:\nX = {x}");
+                    solution.Answers.Add($"{x}");
                 }
                 else if (discr > 0)
                 {
-                    Console.WriteLine("D > 0");
-                    Console.WriteLine("X = (-{0} +- sqrt({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
+                    solution.SolutionLogs.Add("D > 0");
+                    solution.SolutionLogs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
                     double x1 = (-coefficients[1] + Math.Sqrt(discr)) / (2 * coefficients[2]);
                     double x2 = (-coefficients[1] - Math.Sqrt(discr)) / (2 * coefficients[2]);
-                    Console.WriteLine("Solution:\nX1 = {0}\nX2 = {1}", x1, x2);
+                    solution.Answers.Add(x1.ToString());
+                    solution.Answers.Add(x2.ToString());
                 }
                 else
                 {
-                    Console.WriteLine("D < 0");
-                    Console.WriteLine("X = (-{0} +- sqrt({2}))/(2*{1})", coefficients[1], coefficients[2], discr);
-                    Console.WriteLine("Solution:");
+                    solution.SolutionLogs.Add("D < 0");
+                    solution.SolutionLogs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
                     double a1 = -coefficients[1] / (2 * coefficients[2]);
                     double a2 = Math.Abs(Math.Sqrt(-discr) / (2 * coefficients[2]));
                     string s1 = a1 != 0 ? a1 + " " : "";
                     string s2 = a2 != 1 ? " " + a2 : "";
-                    Console.WriteLine("X1 = {0}+{1}i", s1, s2);
-                    Console.WriteLine("X2 = {0}-{1}i", s1, s2);
+                    solution.Answers.Add($"{s1}+{s2}i");
+                    solution.Answers.Add($"{s1}-{s2}i");
                 }
             }
         }
