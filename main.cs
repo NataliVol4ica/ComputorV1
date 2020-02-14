@@ -9,6 +9,7 @@ namespace ComputorV1
     {
         static int Main(string[] args)
         {
+            args = new[] {"x = 0"};
             var solver = new PolynomialSolver(new MyConsole());
             return solver.Solve(args);
         }

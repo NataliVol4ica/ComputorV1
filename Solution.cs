@@ -28,12 +28,14 @@ namespace ComputorV1
         public SolutionType SolutionType { get; set; }
 
         public List<string> Answers { get; set; }
+        public List<string> Logs { get; set; }
 
         public Solution()
         {
             Degree = -1;
             ValidationError = "";
             Answers = new List<string>();
+            Logs = new List<string>();
         }
 
         public void WriteSolution(IConsole console)
@@ -44,6 +46,7 @@ namespace ComputorV1
             console.WriteLine($"Polynomial Degree: {Degree}");
             if (IsSolvable)
             {
+                PrintLogs(console);
                 SolutionPrinter.Print(this, console);
             }
             else
@@ -52,23 +55,9 @@ namespace ComputorV1
             }
         }
 
-        #region SolutionPrinters
-
-        private void PrintSolution_None() { }
-
-        private void PrintSolution_Single()
+        private void PrintLogs(IConsole console)
         {
-
-            //Console.WriteLine("Solution:\nX = {0}", (-coefficients[0] / coefficients[1]));
+            Logs.ForEach(console.WriteLine);
         }
-        private void PrintSolution_Doulbe() { }
-
-        private static void PrintSolution_All(Solution solution)
-        {
-
-        }
-
-        #endregion SolutionPrinters
-
     }
 }

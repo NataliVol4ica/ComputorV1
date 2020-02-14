@@ -11,7 +11,7 @@ namespace ComputorV1
         {
             {SolutionType.None, PrintSolution_None},
             {SolutionType.Single, PrintSolution_Single},
-            {SolutionType.Double, PrintSolution_Doulbe},
+            {SolutionType.Double, PrintSolution_Double},
             {SolutionType.All, PrintSolution_All}
         };
 
@@ -24,11 +24,14 @@ namespace ComputorV1
         private static void PrintSolution_Single(Solution solution, IConsole console)
         {
             console.WriteLine("Solution:");
-            console.WriteLine(solution.Answers[0]);
+            console.WriteLine($"X = {solution.Answers[0]}");
         }
 
-        private static void PrintSolution_Doulbe(Solution solution, IConsole console)
+        private static void PrintSolution_Double(Solution solution, IConsole console)
         {
+            console.WriteLine("Solutions:");
+            console.WriteLine($"X1 = {solution.Answers[0]}");
+            console.WriteLine($"X2 = {solution.Answers[1]}");
         }
 
         private static void PrintSolution_All(Solution solution, IConsole console)

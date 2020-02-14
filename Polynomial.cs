@@ -109,34 +109,45 @@ namespace ComputorV1
             else
             {
                 double discr = coefficients[1] * coefficients[1] - 4 * coefficients[0] * coefficients[2];
-                var a = $"D = {coefficients[1]}^2 - 4*{coefficients[0]}*{coefficients[2]} = {discr}";
+                solution.Logs.Add($"D = {coefficients[1]}^2 - 4*{coefficients[0]}*{coefficients[2]} = {discr}");
                 if (discr == 0.0)
                 {
-                    solution.SolutionLogs.Add("D = 0");
-                    solution.SolutionLogs.Add($"X = -{coefficients[1]}/(2*{coefficients[2]})");
+                    solution.Logs.Add("D = 0");
+                    solution.Logs.Add($"X = -{coefficients[1]}/(2*{coefficients[2]})");
                     double x = -coefficients[1] / (2 * coefficients[2]);
                     solution.SolutionType = SolutionType.Single;
                     solution.Answers.Add($"{x}");
                 }
                 else if (discr > 0)
                 {
-                    solution.SolutionLogs.Add("D > 0");
-                    solution.SolutionLogs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
+                    solution.Logs.Add("D > 0");
+                    solution.Logs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
                     double x1 = (-coefficients[1] + Math.Sqrt(discr)) / (2 * coefficients[2]);
                     double x2 = (-coefficients[1] - Math.Sqrt(discr)) / (2 * coefficients[2]);
+                    solution.SolutionType = SolutionType.Double;
                     solution.Answers.Add(x1.ToString());
                     solution.Answers.Add(x2.ToString());
                 }
                 else
                 {
-                    solution.SolutionLogs.Add("D < 0");
-                    solution.SolutionLogs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
+                    //Todo: Single solution?
+                    solution.Logs.Add("D < 0");
+                    solution.Logs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
                     double a1 = -coefficients[1] / (2 * coefficients[2]);
                     double a2 = Math.Abs(Math.Sqrt(-discr) / (2 * coefficients[2]));
                     string s1 = a1 != 0 ? a1 + " " : "";
                     string s2 = a2 != 1 ? " " + a2 : "";
-                    solution.Answers.Add($"{s1}+{s2}i");
-                    solution.Answers.Add($"{s1}-{s2}i");
+                    if (s1 == s2)
+                    {
+                        solution.SolutionType = SolutionType.Single;
+                        solution.Answers.Add($"{s1}+{s2}i");
+                    }
+                    else
+                    {
+                        solution.SolutionType = SolutionType.Double;
+                        solution.Answers.Add($"{s1}+{s2}i");
+                        solution.Answers.Add($"{s1}-{s2}i");
+                    }
                 }
             }
         }
