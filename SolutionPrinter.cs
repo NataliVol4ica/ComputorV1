@@ -37,7 +37,7 @@ namespace ComputorV1
         private static void PrintSolution_All(Solution solution, IConsole console)
         {
             console.WriteLine("Solution:");
-            console.WriteLine(" All real numbers");
+            console.WriteLine("All real numbers");
         }
 
         public static void Print(Solution s, IConsole console)

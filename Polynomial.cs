@@ -97,7 +97,7 @@ namespace ComputorV1
             if (coefficients.Count == 1)
             {
                 if (coefficients[0] == 0.0)
-                   solution.SolutionType=SolutionType.All;
+                    solution.SolutionType = SolutionType.All;
                 else
                     solution.SolutionType = SolutionType.None;
             }

@@ -7,10 +7,10 @@ namespace ComputorV1
     public class Solution
     {
         public string Expression { get; set; }
-        
+
         public string ValidationError { get; set; }
         public bool IsValid => String.IsNullOrEmpty(ValidationError);
-        
+
         public string ReducedForm { get; set; }
         public int Degree { get; set; }
         public bool IsSolvable => String.IsNullOrEmpty(ErrorMessage) && IsValid;
