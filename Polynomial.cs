@@ -130,24 +130,15 @@ namespace ComputorV1
                 }
                 else
                 {
-                    //Todo: Single solution?
                     solution.Logs.Add("D < 0");
                     solution.Logs.Add($"X = (-{coefficients[1]} +- sqrt({discr}))/(2*{coefficients[2]})");
                     double a1 = -coefficients[1] / (2 * coefficients[2]);
                     double a2 = Math.Abs(Math.Sqrt(-discr) / (2 * coefficients[2]));
                     string s1 = a1 != 0 ? a1 + " " : "";
                     string s2 = a2 != 1 ? " " + a2 : "";
-                    if (s1 == s2)
-                    {
-                        solution.SolutionType = SolutionType.Single;
-                        solution.Answers.Add($"{s1}+{s2}i");
-                    }
-                    else
-                    {
-                        solution.SolutionType = SolutionType.Double;
-                        solution.Answers.Add($"{s1}+{s2}i");
-                        solution.Answers.Add($"{s1}-{s2}i");
-                    }
+                    solution.SolutionType = SolutionType.Double;
+                    solution.Answers.Add($"{s1}+{s2}i");
+                    solution.Answers.Add($"{s1}-{s2}i");
                 }
             }
         }

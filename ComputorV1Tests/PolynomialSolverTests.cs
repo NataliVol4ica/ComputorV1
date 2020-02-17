@@ -20,14 +20,6 @@ namespace ComputorV1Tests
             new object[] {"x^20  = 0", new Solution {Degree = 20}}
         };
 
-
-        public static readonly IEnumerable<object[]> ValidTests_SingleIrrationalSolution_DegreeOne = new List<object[]>
-        {
-            new object[] {"2 + 1 * x^2 = 0", new Solution {Answers = new List<string> {"-2"}}},
-            new object[] {"1 * x ^0 + 0 * x^1 + 1 * x^2 = 0", new Solution {Answers = new List<string> {"-2"}}},
-        };
-
-
         [Theory]
         [MemberData(nameof(ValidTests))]
         public void Solve_WhenCalledWithValidExpression_ShouldWriteProperSolution(string expression, Solution expected)
