@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ComputorV1;
 using Moq;
 using Xunit;
 
@@ -9,9 +8,9 @@ namespace ComputorV1Tests
     {
         public static readonly IEnumerable<object[]> ValidTests_DoubleRationalSolution = new List<object[]>
         {
-            new object[] {"x^2 - x - 2 = 0",  "-1", "2"},
-            new object[] {"x^2 - x = 2",  "-1", "2"},
-            new object[] {"1 * x ^0 + 0 * x^1 - 1 * x^2 = 0",  "-1", "1" }
+            new object[] {"x^2 - x - 2 = 0", "-1", "2"},
+            new object[] {"x^2 - x = 2", "-1", "2"},
+            new object[] {"1 * x ^0 + 0 * x^1 - 1 * x^2 = 0", "-1", "1"}
         };
 
         [Theory]
@@ -31,7 +30,7 @@ namespace ComputorV1Tests
                     s => s.Contains("D > 0"))));
             ConsoleMock
                 .Verify(c => c.WriteLine(It.Is<string>(
-                    s => s.Contains($"Degree: 2"))));
+                    s => s.Contains("Degree: 2"))));
             ConsoleMock
                 .Verify(c => c.WriteLine(It.Is<string>(
                     s => s.Contains($" = {x1}"))));

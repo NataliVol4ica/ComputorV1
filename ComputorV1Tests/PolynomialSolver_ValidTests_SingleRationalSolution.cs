@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using ComputorV1;
 using Moq;
 using Xunit;
 
@@ -11,6 +9,7 @@ namespace ComputorV1Tests
         public static readonly IEnumerable<object[]> ValidTests_SingleRationalSolution_DegreeOne = new List<object[]>
         {
             new object[] {"x  = 2,0", "2"},
+            new object[] {"x^20-x^20+   x  = 2,0", "2"},
             new object[] {"x  = 2.0", "2"},
             new object[] {" 2 * x + 2 * x = 0 ", "0"}
         };
@@ -18,7 +17,7 @@ namespace ComputorV1Tests
         public static readonly IEnumerable<object[]> ValidTests_SingleRationalSolution_DegreeTwo = new List<object[]>
         {
             new object[] {"x^2 + 4*x + 4 = 0", "-2"},
-            new object[] {"2 + ----3 * x ^2 = 0","-2"}
+            new object[] {"2 + ----3 * x ^2 = 0", "-2"}
         };
 
         [TheoryAttribute]

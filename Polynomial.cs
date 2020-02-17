@@ -305,7 +305,7 @@ namespace ComputorV1
             }
 
             if (!metEquation)
-                throw new SyntaxException("Expression is missing \"=\"");
+                throw new SyntaxException("Expression is missing '='");
         }
     }
 }
