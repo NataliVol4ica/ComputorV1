@@ -6,7 +6,7 @@ namespace ComputorV1
 {
     public class PolynomialSolver
     {
-        private IConsole _console;
+        private readonly IConsole _console;
 
         public PolynomialSolver(IConsole console)
         {
@@ -40,8 +40,7 @@ namespace ComputorV1
 
         private void SolveExpression(string expression)
         {
-            var solution = new Solution();
-            solution.Expression = expression;
+            var solution = new Solution {Expression = expression};
             List<double> polynomial = Polynomial.Parse(expression, solution);
             if (solution.IsValid)
             {
