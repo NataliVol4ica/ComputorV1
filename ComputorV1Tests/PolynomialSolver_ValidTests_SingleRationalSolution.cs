@@ -20,7 +20,7 @@ namespace ComputorV1Tests
             new object[] {"2 + ----3 * x ^2 = 0", "-2"}
         };
 
-        [TheoryAttribute]
+        [Theory]
         [MemberData(nameof(ValidTests_SingleRationalSolution_DegreeOne))]
         public void Solve_WhenExpressionHasSingleRationalSolutionAndDegreeOne_ShouldWriteProperSolution(string expr,
             string x)
