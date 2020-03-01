@@ -11,7 +11,8 @@ namespace ComputorV1Tests
             new object[] {"x  = 2,0", "2"},
             new object[] {"x^20-x^20+   x  = 2,0", "2"},
             new object[] {"x  = 2.0", "2"},
-            new object[] {" 2 * x + 2 * x = 0 ", "0"}
+            new object[] {" 2 * x + 2 * x = 0 ", "0"},
+            new object[] {"2.0 * x = 2", "1"}
         };
 
         public static readonly IEnumerable<object[]> ValidTests_SingleRationalSolution_DegreeTwo = new List<object[]>

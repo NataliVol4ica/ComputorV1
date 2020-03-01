@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ComputorV1.Exceptions;
@@ -12,9 +13,10 @@ namespace ComputorV1
         private static readonly Regex TokenRegEx =
             new Regex(@"\s*(\d+((\.|,)\d+)?|[xX]|\+|-|\*|\^|=)\s*", RegexOptions.Compiled);
 
+        
         public static List<double> Parse(string expression, Solution solution)
         {
-            List<double> coefficients = default;
+            List<double> coefficients = new List<double>();
             try
             {
                 Queue<string> stringTokens = Tokenize(expression);
@@ -248,7 +250,7 @@ namespace ComputorV1
                 isStart = false;
                 if (tokens[tokenIndex].tokenType == TokenType.Number)
                 {
-                    Double.TryParse(tokens[tokenIndex++].str.Replace('.', ','), out coeff);
+                    Double.TryParse(MakeNumberParsable(tokens[tokenIndex++].str), out coeff);
                     if (tokenIndex == tokens.Count) //esli 4islo v konce
                     {
                         AddCoef(coefficients, 0, sign * coeff);
@@ -306,6 +308,14 @@ namespace ComputorV1
 
             if (!metEquation)
                 throw new SyntaxException("Expression is missing '='");
+        }
+
+        private static string MakeNumberParsable(string str)
+        {
+            string wantedDelim = new NumberFormatInfo().NumberDecimalSeparator;
+            return str
+                .Replace(".", wantedDelim)
+                .Replace(",", wantedDelim);
         }
     }
 }
